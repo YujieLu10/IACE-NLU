@@ -127,3 +127,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Editor
+.vscode/
+
+# Imagine
+ImaGen/__pycache__/
+
+ImaGen/checkpoints/
+ImaGen/taming/
+
+snap/
+data/
+CME/runs/

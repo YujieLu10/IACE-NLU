@@ -1,0 +1,6 @@
+[submodule "ImaGen/CLIP"]
+	path = ImaGen/CLIP
+	url = https://github.com/openai/CLIP.git
+[submodule "ImaGen/guided-diffusion"]
+	path = ImaGen/guided-diffusion
+	url = https://github.com/openai/guided-diffusion.git

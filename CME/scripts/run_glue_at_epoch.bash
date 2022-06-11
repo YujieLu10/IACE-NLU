@@ -1,0 +1,71 @@
+export GLUE_DIR=../data/nlu/glue/
+EPOCHS=$2
+MODELNAME=$3
+CKPT=$4
+TYPE=$5
+MODE=$6
+model_type=$7
+tokenizer_name=$8
+visEPOCHS=$9
+batch=${10:-32}
+percent=${11:-100}
+
+if [ "$MODELNAME" == "bert_small" ];
+then
+    MODEL=../snap/vlm/wiki103_bert_small/lastcheckpoint
+elif [ "$MODELNAME" == "roberta_small" ];
+then
+    MODEL=../snap/vlm/roberta_vlm_wiki103
+elif [ "$MODELNAME" == "bert_base" ];
+then
+    MODEL=../snap/vlm/vlm_12L_768H_wiki
+elif [ "$MODELNAME" == "roberta_base" ];
+then
+    MODEL=../snap/vlm/vlm_roberta_12L_768H_wiki
+else
+    MODEL=$MODELNAME
+fi
+
+if [ "$MODE" == "pretrain" ];
+then
+    model_name_or_path=$MODEL/checkpoint-epoch00$CKPT
+    config_name=$MODEL/checkpoint-epoch00$CKPT
+elif [ "$MODE" == "loading" ];
+then
+    model_name_or_path=$MODEL # loading
+    config_name=$MODEL
+else
+    model_name_or_path=$MODEL # loading
+    config_name=$MODEL
+    MODEL=../snap/vlm/$MODEL
+fi
+
+for TASK_NAME in MNLI SST-2 QNLI QQP STS-B MRPC
+do
+    for PERCENT in $percent
+    do
+        CUDA_VISIBLE_DEVICES=$1 python model/run_glue_ima.py \
+            --train_data_percentage $PERCENT \
+            --model_type $model_type \
+            --tokenizer_name=$tokenizer_name \
+            --model_name_or_path $model_name_or_path \
+            --task_name $TASK_NAME \
+            --do_train \
+            --do_eval \
+            --do_lower_case \
+            --data_dir $GLUE_DIR/$TASK_NAME \
+            --save_steps -1 \
+            --max_seq_length 126 \
+            --per_gpu_eval_batch_size=$batch   \
+            --per_gpu_train_batch_size=$batch   \
+            --learning_rate 1e-4 \
+            --warmup_steps 0.1 \
+            --num_train_epochs $EPOCHS.0 \
+            --num_langvis_train_epochs $visEPOCHS \
+            --config_name $config_name \
+            --output_dir $MODEL/$TASK_NAME/$batch\_$TYPE\_percent$PERCENT \
+            --overwrite_output_dir \
+            --unifylangvis
+        fi
+    done
+done
