@@ -53,10 +53,6 @@ python download_glue_data.py --data_dir ../data/glue
 ```
 Get SWAG data from <https://github.com/rowanz/swagaf/tree/master/data>
 
-To extract subset of the data, you could simply run:
-```sh
-python extract_subset.py
-```
 
 ## Visual Imaginary Generation
 ### Based on CLIP-Guided GAN
