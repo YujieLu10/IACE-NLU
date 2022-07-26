@@ -106,8 +106,8 @@ You can then extract features of the glue and swag dataset by (use 'eval' option
 
 ```sh
 cd tools
-python extract_feature.py -rp glue
-python extract_feature.py -rp swag
+python extract_feature.py -nlu_dataset glue
+python extract_feature.py -nlu_dataset swag
 ```
 
 ## Visually-Supervised Transformer
